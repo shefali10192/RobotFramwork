@@ -1,0 +1,236 @@
+*** Settings ***
+Resource    C:/RobotFramework/Resources/php_travels_hotel_resources.txt
+Library    datetime
+
+*** Keywords ***
+Open Browser and Login
+   SeleniumLibrary.open browser    ${URL}    ${Browser}
+    SeleniumLibrary.maximize browser window
+
+close Browser
+    close all browsers
+    run keyword if test failed    Log Screenshot
+
+Log Screenshot
+    capture page screenshot
+
+Sign Up And Login
+    set selenium speed    5 seconds
+    #### Click on My Account then SignUp button
+    click element    ${CSS_MyAccount}
+    wait until element is visible    ${XPATH_SignUp}
+    click element    ${xpath_signup}
+
+    ### Checking the Page Title
+    ${Title}    get title
+    should be equal    ${Title}    ${SignUpTitle}
+
+    #### Enter all the fields Details
+    input text    ${xpath_firstname}    ${FirstName}
+    input text    ${xpath_lastname}   ${LastName}
+    input text    ${xpath_mobilenumber}   ${MobileNumber}
+    input text    ${xpath_emailaddress}   ${EmailAddress}
+    input text    ${xpath_password}   ${password}
+    input text    ${xpath_confirmpassword}    ${password}
+
+    ### Scroll Down by 350 pixels
+    execute javascript    window.scrollTo(0,350)
+
+    ### Click on Sign up button
+    click button    ${XPATH_SignUpSubmitButton}
+
+    ### Verifying My account page title
+    ${MyAccountTitleActual}    get title
+    should be equal    ${MyAccountTitleActual}  ${MyAccountTitle}
+    ${NameMyAccountActual}  get text    ${xpath_namemyaccount}
+    should be equal     Hi, ${FirstName} ${LastName}    ${NameMyAccountActual}
+
+    ### Logout and then Login
+    click element    ${CSS_MyAccountLogged}
+    wait until element is visible    ${XPATH_Logout}
+    click element    ${XPATH_Logout}
+    wait until element is visible   ${XPATH_Login}
+
+    ## Enter Email and Password then click on Login Button
+    input text    ${XPATH_Username}     ${EmailAddress}
+    input text    ${XPATH_Password}     ${Password}
+    click element    ${XPATH_Login}
+
+Search By Destination
+    set selenium speed    7 seconds
+
+     ### Scroll Down by 350 pixels
+    execute javascript    window.scrollTo(0,350)
+    wait until element is visible   ${XPATH_HotelTab}
+    click element    ${XPATH_HotelTab}
+    click element    ${XPATH_Destination}
+    press keys    ${XPATH_Destination}    Dubai
+    wait until element is visible    ${XPATH_SearchResult}
+    click element    ${XPATH_SearchResult}
+    click element    ${XPATH_Search}
+
+    ## Verify Title
+    ${SearchResultActual}    get title
+    should be equal    ${SearchResultActual}    ${SearchResultTitle}
+
+Search By Hotel
+    [ARGUMENTS]    ${HotelSearch}    ${CheckInDate}    ${CheckOutDate}
+    set selenium speed    7 seconds
+
+     ### Scroll Down by 350 pixels
+    execute javascript    window.scrollTo(0,350)
+    wait until element is visible   ${XPATH_HotelTab}
+    click element    ${XPATH_HotelTab}
+    click element    ${XPATH_Destination}
+    press keys    ${XPATH_Destination}    ${HotelSearch}
+    wait until element is visible    ${XPATH_SearchResult}
+    click element    ${XPATH_SearchResult}
+    click element    ${XPATH_CheckInDate}
+    clear element text    ${XPATH_CheckInDate}
+
+    input text    ${XPATH_CheckInDate}    ${CheckInDate}
+    clear element text    ${XPATH_CheckOutDate}
+    click element    ${XPATH_CheckOutDate}
+
+    input text    ${XPATH_CheckOutDate}    ${CheckOutDate}
+    click element    ${XPATH_Search}
+Verify Hotel Page
+    [Arguments]    ${HotelSearch}
+    ${HotelTitlPage}    get title
+    should be equal    ${HotelTitlPage}    ${HotelSearch}
+Get Available Room Details
+     set selenium speed    5 seconds
+
+   ### Available Rooms name
+    @{WebElementsRoomsName}=   Get WebElements    xpath=${XPATH_AvailableRoomList}
+
+    @{AvailableRoomsNameList}    create list
+    ${Text}    Get Element Count    xpath=${XPATH_AvailableRoomList}
+    FOR    ${DescRooms}    IN    @{WebElementsRoomsName}
+       ${RoomName}    get text    ${DescRooms}
+       append to list    ${AvailableRoomsNameList}   ${RoomName}
+
+    END
+     ### Available Rooms name
+    @{WebElementsRoomsPrice}=   Get WebElements    xpath=${XPATH_AvailableRoomPrice}
+
+    @{AvailableRoomsPriceList}    create list
+    ${Text}    Get Element Count    xpath=${XPATH_AvailableRoomPrice}
+    FOR    ${DescRoomsPrice}    IN    @{WebElementsRoomsPrice}
+       ${RoomPrice}    get text    ${DescRoomsPrice}
+       append to list    ${AvailableRoomsPriceList}   ${RoomPrice}
+
+    END
+    FOR    ${i}    IN RANGE    ${Text}
+        # append to list    ${HotelGeneralList}    ${HotelNameList[${i}]}  ${HotelPriceList[${i}]}   ${HotelRatingList[${i}]}
+
+         log to console   Hotel Name: ${AvailableRoomsNameList[${i}]} ,Price: ${AvailableRoomsPriceList[${i}]}
+    END
+
+Get Hotel Details
+   set selenium speed    5 seconds
+
+
+   ### Hotel Name Details
+    @{WebElementsHotelName}=   Get WebElements    xpath=${XPATH_SearchListHotelName}
+    Set Global Variable    ${WebElementsHotelName}
+    @{HotelNameList}    create list
+    ${Text}    Get Element Count    xpath=${XPATH_SearchListHotelName}
+    FOR    ${DescHotel}    IN    @{WebElementsHotelName}
+       ${HotelName}    get text    ${DescHotel}
+       append to list    ${HotelNameList}   ${HotelName}
+
+    END
+
+    ### Hotel Price Details
+     @{WebElementsPrice}=   Get WebElements    xpath=${XPATH_SearchListHotelPrice}
+    Set Global Variable    ${WebElementsPrice}
+    @{HotelPriceList}   create list
+    ${Text}    Get Element Count    xpath=${XPATH_SearchListHotelPrice}
+    FOR    ${DescPrice}    IN    @{WebElementsPrice}
+       ${HotelPrice}    get text    ${DescPrice}
+       append to list    ${HotelPriceList}  ${HotelPrice}
+    END
+
+    ### Hotel Price Rating
+     @{WebElementsRating}=   Get WebElements    xpath=${XPATH_SearchListHotelRating}
+    Set Global Variable    ${WebElementsRating}
+    @{HotelRatingList}    create list
+    ${Text}    Get Element Count    xpath=${XPATH_SearchListHotelRating}
+    FOR    ${DescRating}    IN    @{WebElementsRating}
+       ${HotelRating}    get text    ${DescRating}
+       append to list    ${HotelRatingList}  ${HotelRating}
+     END
+
+    @{HotelGeneralList}    create list
+    &{HotelDictionary}    create dictionary
+    FOR    ${i}    IN RANGE    ${Text}
+        # append to list    ${HotelGeneralList}    ${HotelNameList[${i}]}  ${HotelPriceList[${i}]}   ${HotelRatingList[${i}]}
+
+         log to console   Hotel Name: ${HotelNameList[${i}]} ,Price: ${HotelPriceList[${i}]} ,Rating: ${HotelRatingList[${i}]}
+    END
+    #END
+Verify Average Price
+    ${AveragePrice}    get text    ${XPATH_AveragePrice}
+    log to console  ${AveragePrice}
+
+Verify Discount Perentage
+    ${DiscountPrice}    get text    ${XPATH_DiscountPrice}
+    log to console    ${DiscountPrice}
+
+Modify Check In And Check Out Date
+    [Arguments]    ${CheckInDate}    ${CheckOutDate}
+
+    Select Date    ${XPATH_CheckInDateModify}    ${CheckInDate}
+    execute javascript    window.scrollTo(0,600)
+    Select Date    ${XPATH_CheckOutDateModify}    ${CheckOutDate}
+    input text    ${XPATH_CheckInDateModify}    ${CheckInDate}
+    click element    ${XPATH_CheckOutDateModify}
+    clear element text    ${XPATH_CheckOutDateModify}
+    input text    ${XPATH_CheckOutDateModify}   ${CheckOutDate}
+    execute javascript    window.scrollTo(0,1200)
+    click element    ${XPATH_ModifyButton}
+
+
+Select Date
+    [Arguments]    ${XPATH_CheckInDateModify}    ${Date}
+    click element    ${XPATH_CheckInDateModify}
+
+    ${Year}=    convert date    ${Date}    result_format=%Y    date_format=%d/%m/%Y
+    ${Month}=    convert date    ${Date}    result_format=%b    date_format=%d/%m/%Y
+    ${Day}=    convert date    ${Date}    result_format=%d    date_format=%d/%m/%Y
+    click element    //div[@class='datepicker--nav-title']
+    click element    //div[@class='datepicker--nav-title']
+    click element    //div[text()=${Year}]
+    click element    //div[text()='${Month}']
+    click element    //div[text()=${Day}]
+    press keys    ${XPATH_CheckInDateModify}    \\\27
+
+Verify Hotel Details Pagination
+     ${Pagination}=    get element count    xpath=${XPATH_Pagination}
+     log to console    ${Pagination}
+     FOR    ${i}    IN RANGE    ${Pagination}-2
+        log to console    ${i}
+        Get Hotel Details
+        execute javascript    window.scrollTo(0,1100)
+        RUN KEYWORD IF    ${i}<2    Next Pagination Click
+     END
+Next Pagination Click
+    log to console    called
+    click element    ${XPATH_PaginationNext}
+
+NoTHING
+
+
+
+
+
+
+
+
+
+
+
+
+
+

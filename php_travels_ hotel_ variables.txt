@@ -1,0 +1,40 @@
+*** Variables ***
+
+######## SignUp & Login Form ########
+${CSS_MyAccount}    //div[@class='dropdown dropdown-login dropdown-tab']/a
+${XPATH_SignUp}    //a[text()='Sign Up']
+${XPATH_FirstName}    //input[@name='firstname']
+${XPATH_LastName}    //input[@name='lastname']
+${XPATH_MobileNumber}    //input[@name='phone']
+${XPATH_EmailAddress}    //input[@name='email']
+${XPATH_Password}    //input[@name='password']
+${XPATH_ConfirmPassword}    //input[@name='confirmpassword']
+${XPATH_SignUpSubmitButton}    //div[@class='form-group']/button
+${XPATH_NameMyAccount}    //div[@class='col-md-8']/h3
+${CSS_MyAccountLogged}  //div[@class='dropdown dropdown-login dropdown-tab']/a
+${XPATH_Logout}    //a[text()='Logout']
+
+${XPATH_Username}   //input[@name='username']
+${XPATH_Login}    //button[text()='Login']
+
+### Search Functinality
+${XPATH_HotelTab}    //li/a[contains(text(),'Hotels')]
+${XPATH_Destination}    //div[@id='s2id_autogen16']
+${XPATH_Search}    //button[@type='submit'][1]
+${XPATH_SearchResult}   //div/span[@class='select2-match']
+${XPATH_SearchListHotelName}    //div[@class='content-wrapper']/div[@class='product-long-item-wrapper']/div[@class='product-long-item']/div/div/div/div/div/div/h5
+${XPATH_SearchListHotelPrice}   //div[@class='content-wrapper']/div[@class='product-long-item-wrapper']/div[@class='product-long-item']/div/div/div/div/div/div/div/span
+${XPATH_SearchListHotelRating}    //div[@class='content-wrapper']/div[@class='product-long-item-wrapper']/div[@class='product-long-item']/div/div/div/div/div/div/div/p/span[@class='bg-primary']
+${XPATH_CheckInDate}    //input[@id='checkin']
+${XPATH_CheckOutDate}   //input[@id='checkout']
+${XPATH_AvailableRoom}    //li/a[text()='Available Rooms']
+${XPATH_AvailableRoomList}  //div[@class='content']/h5
+${XPATH_AvailableRoomPrice}    //p/span[@class='number text-secondary']
+${XPATH_AveragePrice}    //div[@class='price']/span/span
+${XPATH_DiscountPrice}    //div[@class='discount']
+${XPATH_CheckInDateModify}    //input[@name='checkin']
+${XPATH_CheckOutDateModify}    //input[@name='checkout']
+${XPATH_ModifyButton}    //button[text()='Modify']
+${XPATH_NavTitle}    //div[@class='datepicker--nav-title']
+${XPATH_Pagination}    //ul[@class='pagination justify-content-center justify-content-lg-left']/li
+${XPATH_PaginationNext}    //li/a[text()='>']
